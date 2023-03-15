@@ -1,0 +1,11 @@
+python-dotenv
+openai
+gradio
+pandas
+jupyter
+keras
+# tensorflow
+# tensorboard
+numpy
+matplotlib
+seaborn
