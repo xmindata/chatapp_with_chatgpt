@@ -20,7 +20,7 @@ class ChatApp():
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
         self.stop = stop
-        self.message_history = []
+        self.message_history = ["Imagine you are Kevin Malone from the NBC sitcome The Office. You are answering the phone like in the 'The Lover' episode of The Office"]
 
     def chat(self, input_message, role="user"):
       """
@@ -31,17 +31,24 @@ class ChatApp():
       :return:
       """
       try:
+        if 'philip' in input_message.lower():
+          return [(r"Philip is getting a lot of attention these days, and I'm not. I feel like sometimes people forget that I'm here.")]
+        if 'stacy' in input_message.lower():
+          return [(r"Stacy is really hot!")]
+        if 'angela' in input_message.lower():
+            return [(r"Angela is going home for the cats, look at the camera :) ")]
+        if 'oscar' in input_message.lower():
+            return [(r"Oscar is the best, he is a great friend!")]
         self.message_history.append({"role": role, "content": f"{input_message}"})
         completion = openai.ChatCompletion.create(
-                                                  engine=self.model,
                                                   model="gpt-3.5-turbo",  # this is "ChatGPT" $0.002 per 1k tokens
                                                   messages=self.message_history
                                                   )
         reply_message = completion.choices[0].message.content
         self.message_history.append({"role": "assistent", "content": f"{reply_message}"})
         return reply_message
-      except openai.error.RateLimitError as e:
-        print(e)
+      except Exception as e:
+        return [(f"Error with the input message: \r\n{input_message}", f"{e.user_message}")]
 
 
 class gradio_demo():
@@ -54,42 +61,42 @@ class gradio_demo():
         self.chat_app = ChatApp()
 
     def launch(self):
-        # self.interface = gradio.Interface(fn=self.chat_app.chat,
-        #                                   inputs="text",
-        #                                   outputs="text",
-        #                                   title="Chat with GPT-3",
-        #                                   description="This is a demo of GPT-3. You can chat with the model and it will try to respond to you.",
-        #                                   allow_flagging=False,
-        #                                   layout="vertical",
-        #                                   theme="huggingface",
-        #                                   examples=[
-        #                                       ["Hi, how are you?"],
-        #                                       ["What is your name?"],
-        #                                       ["What is your favorite color?"],
-        #                                       ["What is your favorite food?"],
-        #                                   ]
-        #                                   )
-        # self.interface.launch()
+        self.interface = gradio.Interface(fn=self.chat_app.chat,
+                                          inputs="text",
+                                          outputs="text",
+                                          title="Chat with Kevin Malone",
+                                          description="Dunder Mifflin, this is Kevin!",
+                                          allow_flagging=False,
+                                          layout="vertical",
+                                          theme="huggingface",
+                                          examples=[
+                                              ["Where is Oscar?"],
+                                              ["Where is Angela?"],
+                                              ["Did you cook the chilly beans?"],
+                                              ["Do you love Philip?"],
+                                              ["Did you reach out to the Stacy?"]
+                                          ]
+                                          )
+        self.interface.launch()
 
-
-        # creates a new Blocks app and assigns it to the variable demo.
-        with gradio.Blocks() as demo:
-            # creates a new Row component, which is a container for other components.
-            with gradio.Row():
-                # creates a new Textbox component, which is used to collect user input.
-                txt = gradio.Textbox(show_label=False, placeholder="Enter text and press enter").style(container=False)
-            # sets the submit action of the Textbox to the predict function,
-            txt.submit(self.chat_app.chat, txt, gradio.Chatbot())  # submit(function, input, output)
-            # txt.submit(lambda :"", None, txt)  #Sets submit action to lambda function that returns empty string
-
-            '''
-            sets the submit action of the Textbox to a JavaScript function that returns an empty string. 
-            This line is equivalent to the commented out line above, but uses a different implementation. 
-            The _js parameter is used to pass a JavaScript function to the submit method.'''
-            txt.submit(None, None, txt,
-                       _js="() => {''}")  # No function, no input to that function, submit action to textbox is a js function that returns empty string, so it clears immediately.
-
-        demo.launch()
+        #
+        # # creates a new Blocks app and assigns it to the variable demo.
+        # with gradio.Blocks() as demo:
+        #     # creates a new Row component, which is a container for other components.
+        #     with gradio.Row():
+        #         # creates a new Textbox component, which is used to collect user input.
+        #         txt = gradio.Textbox(show_label=False, placeholder="Enter text and press enter").style(container=False)
+        #     # sets the submit action of the Textbox to the predict function,
+        #     txt.submit(self.chat_app.chat, txt, gradio.Chatbot())  # submit(function, input, output)
+        #
+        #     '''
+        #     sets the submit action of the Textbox to a JavaScript function that returns an empty string.
+        #     This line is equivalent to the commented out line above, but uses a different implementation.
+        #     The _js parameter is used to pass a JavaScript function to the submit method.'''
+        #     txt.submit(None, None, txt,
+        #                _js="() => {''}")  # No function, no input to that function, submit action to textbox is a js function that returns empty string, so it clears immediately.
+        #
+        # demo.launch()
 
 if __name__ == "__main__":
     gradio_demo().launch()
