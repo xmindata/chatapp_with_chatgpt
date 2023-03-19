@@ -8,6 +8,12 @@ The theme of this app is based on the character Kevin Malone from the TV show Th
 Run the code, and then go to the link provided by gradio.
 
 ## Demo
+- Ask Kevin anything about Angela, and he will respond with a scene from the show.
+![Angela](./docs/Angela.png)
+- Ask Kevin anything about Philip, and he will respond with a quote from the show.
+![Philip](./docs/Philip.png)
+- Ask Kevin anything about Stacy, and he will respond as he is Kevin.
+![Stacy](./docs/Stacy.png)
 
 
 ## References
